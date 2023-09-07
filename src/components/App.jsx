@@ -1,30 +1,30 @@
 import { Statistics } from "components/Statistics/Statistics";
 import { FeedbackOptions } from "components/FeedbackOptions/FeedbackOptions";
-import { Component } from "react";
+import { useState } from "react";
 import { SectionTitle } from "./SectionTitle/SectionTitle";
 
-export class App extends Component{
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+
+
+export const App = () => {
+
+  const [good, setgood] = useState(0)
+  const [neutral, setneutral] = useState(0)
+  const [bad, setbad] = useState(0)
+
+  const handlerButtonFeedback = ({ target: { value } }) => {
+    if (value === 'good') {
+      setgood(prevCount => prevCount + 1)
+    }
+    if (value === 'neutral') {
+      setneutral(prevCount => prevCount + 1)
+    }
+    if (value === 'bad') {
+      setbad(prevCount => prevCount + 1)
+    }
   }
 
-  handlerButtonFeedback = ({ target: { value } }) => {
-    this.setState(prevState => ({ [value]: prevState[value] + 1 }))
-
-  }
-
-  countPositiveFeedbackPercentage = ({ good, neutral, bad } = this.state) => {
-    return Math.round((good / (good + neutral + bad)) * 100 || 0);
-  }
-
-  countTotalFeedback = ({ good, neutral, bad } = this.state) => {
-    return good + neutral + bad;
-  }
-  
-  render() {
-    return (
+   
+  return (
     <div
       style={{
         height: '100vh',
@@ -39,22 +39,20 @@ export class App extends Component{
           tytle="Please leave feedback"
         >
           <FeedbackOptions
-            onLeaveFeedback={this.handlerButtonFeedback}
-            options={this.state}
+            onLeaveFeedback={handlerButtonFeedback}
+          options={{good, bad, neutral}}
           ></FeedbackOptions>
 
-          {this.state.good + this.state.bad + this.state.neutral > 0 ?
+          {good + bad + neutral > 0 ?
             (<Statistics
-              good={this.state.good}
-              neutral={this.state.neutral}
-              bad={this.state.bad}
-              countTotalFeedback={this.countTotalFeedback}
-              countPositiveFeedbackPercentage={this.countPositiveFeedbackPercentage}
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              countTotalFeedback={good+bad+neutral}
+            countPositiveFeedbackPercentage={(good / (good + neutral + bad)) * 100 || 0}
             ></Statistics>) : (<p>There is no feedback</p>)}  
         
         </SectionTitle>
- 
     </div>
-  );
-  }
+  )
 }
